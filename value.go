@@ -5,7 +5,10 @@
 // and arithmetic that raw any values lack.
 package value
 
-import "strconv"
+import (
+	"reflect"
+	"strconv"
+)
 
 // Value is the dynamic value: nil | bool | int64 | float64 | string | []Value |
 // map[string]Value. The alias keeps encoding/json interop direct (a decoded
@@ -134,7 +137,9 @@ func Equal(a, b Value) bool {
 	if x, y, ok := bothNumbers(a, b); ok {
 		return x == y
 	}
-	return KindOf(a) == KindOf(b) && a == b
+	// reflect.DeepEqual handles every kind, including the uncomparable []Value and
+	// map[string]Value (a direct == on those panics) and distinct types.
+	return reflect.DeepEqual(a, b)
 }
 
 // Compare orders a and b, returning -1, 0, or 1. Numbers compare across

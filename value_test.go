@@ -132,6 +132,24 @@ func TestEqual(t *testing.T) {
 	if Equal(true, int64(1)) {
 		t.Error("bool and int are not equal")
 	}
+	if !Equal(nil, nil) {
+		t.Error("null equals null")
+	}
+	if !Equal([]Value{int64(1), "a"}, []Value{int64(1), "a"}) {
+		t.Error("equal lists")
+	}
+	if Equal([]Value{int64(1)}, []Value{int64(2)}) {
+		t.Error("unequal lists")
+	}
+	if !Equal(map[string]Value{"k": "v"}, map[string]Value{"k": "v"}) {
+		t.Error("equal objects")
+	}
+	if Equal(map[string]Value{"k": "v"}, map[string]Value{"k": "w"}) {
+		t.Error("unequal objects")
+	}
+	if Equal([]Value{int64(1)}, map[string]Value{"k": int64(1)}) {
+		t.Error("a list is not an object")
+	}
 }
 
 func TestCompare(t *testing.T) {
