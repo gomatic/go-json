@@ -82,6 +82,9 @@ func TestAsInt(t *testing.T) {
 	if n, err := AsInt(5.9); err != nil || n != 5 {
 		t.Fatalf("AsInt(float) trunc: %v %v", n, err)
 	}
+	if n, err := AsInt(-5.9); err != nil || n != -5 {
+		t.Fatalf("AsInt(negative float) truncates toward zero: %v %v", n, err)
+	}
 	if _, err := AsInt("x"); !errors.Is(err, ErrNotNumber) {
 		t.Fatalf("AsInt err: got %v want ErrNotNumber", err)
 	}
