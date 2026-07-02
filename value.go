@@ -165,12 +165,15 @@ func sign(d delta) int {
 	return sign3(float64(d) < 0, float64(d) > 0)
 }
 
+// ordered is one direction of an ordering comparison.
+type ordered bool
+
 // sign3 collapses a isLess/isGreater pair into -1, 0, or 1.
-func sign3(isLess, isGreater bool) int {
+func sign3(isLess, isGreater ordered) int {
 	switch {
-	case isLess:
+	case bool(isLess):
 		return -1
-	case isGreater:
+	case bool(isGreater):
 		return 1
 	}
 	return 0
