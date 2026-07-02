@@ -146,7 +146,7 @@ func Equal(a, b Value) bool {
 // int/float; strings compare lexically; any other pairing is ErrIncomparable.
 func Compare(a, b Value) (int, error) {
 	if x, y, ok := bothNumbers(a, b); ok {
-		return sign(dParam(x - y)), nil
+		return sign(delta(x - y)), nil
 	}
 	as, aerr := AsString(a)
 	bs, berr := AsString(b)
@@ -156,11 +156,12 @@ func Compare(a, b Value) (int, error) {
 	return 0, ErrIncomparable
 }
 
-// dParam names the d parameter of sign; rename it to the real domain concept.
-type dParam float64
+// delta is the signed difference between two compared numbers; only its sign
+// is meaningful.
+type delta float64
 
 // sign returns the sign of d as -1, 0, or 1.
-func sign(d dParam) int {
+func sign(d delta) int {
 	return sign3(float64(d) < 0, float64(d) > 0)
 }
 
