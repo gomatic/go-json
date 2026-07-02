@@ -123,7 +123,7 @@ func Truthy(v Value) bool {
 }
 
 // bothNumbers reports whether a and b are both numeric, returning float views.
-func bothNumbers(a, b Value) (x, y float64, ok bool) {
+func bothNumbers(a, b Value) (x, y float64, isOk bool) {
 	af, aerr := AsFloat(a)
 	bf, berr := AsFloat(b)
 	if aerr != nil || berr != nil {
@@ -146,7 +146,7 @@ func Equal(a, b Value) bool {
 // int/float; strings compare lexically; any other pairing is ErrIncomparable.
 func Compare(a, b Value) (int, error) {
 	if x, y, ok := bothNumbers(a, b); ok {
-		return sign(x - y), nil
+		return sign(dParam(x - y)), nil
 	}
 	as, aerr := AsString(a)
 	bs, berr := AsString(b)
@@ -156,17 +156,20 @@ func Compare(a, b Value) (int, error) {
 	return 0, ErrIncomparable
 }
 
+// dParam names the d parameter of sign; rename it to the real domain concept.
+type dParam float64
+
 // sign returns the sign of d as -1, 0, or 1.
-func sign(d float64) int {
-	return sign3(d < 0, d > 0)
+func sign(d dParam) int {
+	return sign3(float64(d) < 0, float64(d) > 0)
 }
 
-// sign3 collapses a less/greater pair into -1, 0, or 1.
-func sign3(less, greater bool) int {
+// sign3 collapses a isLess/isGreater pair into -1, 0, or 1.
+func sign3(isLess, isGreater bool) int {
 	switch {
-	case less:
+	case isLess:
 		return -1
-	case greater:
+	case isGreater:
 		return 1
 	}
 	return 0
